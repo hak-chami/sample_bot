@@ -1,6 +1,8 @@
 class LinebotController < ApplicationController
   require 'line/bot'
 
+  protect_from_forgery :except => [:callback]
+
   def client
     @client ||= Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
