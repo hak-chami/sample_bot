@@ -21,23 +21,19 @@ class LinebotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each { |event|
+      @message = event.message['text']
       case event.type
         when 'text'
-          case event.message['text']
-            when '猫', 'ねこ', 'ネコ'
+          if Reply.exists?(word: @message)
+            @for_reply = Reply.find_by(word: @message)
               message = {
                 type: 'text',
-                text: 'にゃーん'
-              }
-             when '犬', 'いぬ', 'イヌ'
-              message = {
-                type: 'text',
-                text: 'わんわん'
+                text: @for_reply.reply_message
               }
             else
               message = {
               type: 'text',
-              text: event.message['text']
+              text: @message
               }
           end
         else
